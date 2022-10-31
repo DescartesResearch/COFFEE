@@ -1,0 +1,6 @@
+loop 100
+start 1
+delay 30
+remove 1
+delay 30
+endloop

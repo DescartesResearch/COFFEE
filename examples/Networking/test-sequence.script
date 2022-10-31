@@ -1,0 +1,8 @@
+loop 100
+start 3
+delay 30
+network
+delay 60
+remove 3
+delay 30
+endloop

@@ -1,0 +1,11 @@
+loop 100
+start 10
+delay 20
+load
+delay 120
+update 10
+delay 120
+endload
+remove 10
+delay 30
+endloop

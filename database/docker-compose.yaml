@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+
+  # for debugging
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "3307:80"
+    environment:
+      - PMA_HOST=my_sql
+      - PMA_PMADB=of_monitor_db
+    depends_on:
+      - my_sql
+
+  my_sql:
+    image: mysql:5.7.39
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: OF-Benchmarking2022
+      MYSQL_DATABASE: of_monitor_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - cobench_mysql_volume:/var/lib/mysql
+
+volumes:
+  cobench_mysql_volume:

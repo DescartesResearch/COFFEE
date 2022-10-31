@@ -1,0 +1,5 @@
+seq
+start 1
+delay 10
+remove 1
+endseq

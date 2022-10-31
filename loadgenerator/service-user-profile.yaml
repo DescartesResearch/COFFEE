@@ -1,0 +1,21 @@
+services:
+  # Single example service; every request profile specifies one service at minimum
+  - service_name: service
+    # The service's protocol (http or https)
+    protocol: http
+    # The service's response structure (ignore or json);
+    # setting this to json will cause the load generator to parse json responses at the cost of load generator performance
+    response_content_type: ignore
+    hosts:
+      # Host is set AUTOMATICALLY at LoadGenerator Setup
+      - "10.1.12.105:30007"
+    # common headers to be sent along with every call to the service
+    common_headers:
+      Content-Type: application/json
+      # User-Agent: "Mozilla/5.0"
+user_requests:
+  # single user request; sends a GET request to the example service's / url
+  - service_name: service
+    method: GET
+    uri:
+      text: "/load"
