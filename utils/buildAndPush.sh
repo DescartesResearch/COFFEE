@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 set -x
+
+REPOSITORY="someowner/somerepo"
+
 bash build.sh
-bash ./utils/docker-push-proxy.sh
-bash ./utils/docker-push.sh
-bash ./utils/docker-push-update.sh
-mvn -f controller/pom.xml clean package spring-boot:repackage
+bash docker-push-proxy.sh $REPOSITORY
+bash docker-push.sh $REPOSITORY
+bash docker-push-update.sh $REPOSITORY
+mvn -f ../controller/pom.xml clean package spring-boot:repackage
 set +x
