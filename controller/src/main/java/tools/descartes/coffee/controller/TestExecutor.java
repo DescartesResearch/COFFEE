@@ -146,6 +146,8 @@ public class TestExecutor implements Runnable {
         if (controllerProperties.isExportResults()) {
             summaryExporter.cleanUpSummaryExport();
         }
+
+        logger.log(Level.INFO, "COFFEE executed the test campaign successfully! Thanks for using COFFEE!");
     }
 
     private void shutDown() {
