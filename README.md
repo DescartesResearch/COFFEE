@@ -21,8 +21,6 @@ For actual usage:
 
 We provide an overview of COFFEE's components and functionality in our [docs](https://github.com/DescartesResearch/COFFEE/blob/main/docs/overview.md). Before build and usage make sure you are familiar with COFFEE's [configuration options](https://github.com/DescartesResearch/COFFEE/blob/main/docs/configuration.md). After setting all required configuration parameters, consider our guide on [how to run an experiment](https://github.com/DescartesResearch/COFFEE/blob/main/docs/runExperiment.md) with COFFEE. All necessary build and run scripts can be found in the [utils](https://github.com/DescartesResearch/COFFEE/tree/main/utils) folder of this repository.
 
-TODO: Insert VM Link
-
 ## Cite us
 
 Provisional BibTeX entry:
