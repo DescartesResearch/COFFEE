@@ -23,21 +23,27 @@ We provide an overview of COFFEE's components and functionality in our [docs](ht
 
 ## Cite us
 
-Provisional BibTeX entry:
+Read the full paper on [ACM Digital Library](https://dl.acm.org/doi/10.1145/3578244.3583726)
+
+BibTeX entry:
 
 ```
-@inproceedings{ProvisionalBibTeX,
+@inproceedings{10.1145/3578244.3583726,
 author = {Straesser, Martin and Mathiasch, Jonas and Bauer, Andr\'{e} and Kounev, Samuel},
 title = {A Systematic Approach for Benchmarking of Container Orchestration Frameworks},
 year = {2023},
+isbn = {9798400700682},
 publisher = {Association for Computing Machinery},
 address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3578244.3583726},
+doi = {10.1145/3578244.3583726},
 booktitle = {Proceedings of the 2023 ACM/SPEC International Conference on Performance Engineering},
-keywords = {container orchestration, benchmarking, kubernetes, nomad, performance},
+pages = {187–198},
+numpages = {12},
+keywords = {container orchestration, nomad, performance, benchmarking, kubernetes},
 location = {Coimbra, Portugal},
-series = {ICPE '23},
-note = {In print.}
-}
+series = {ICPE '23}
+} 
 ```
 
 ## Any questions?
