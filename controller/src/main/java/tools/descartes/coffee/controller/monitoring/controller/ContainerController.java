@@ -259,10 +259,7 @@ public class ContainerController {
             }
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
-
-            for (int i = 0; i < loadDistributionDTO.getRequestNumbers().size(); i++) {
-                bw.write(loadDistributionDTO.getRequestNumbers().get(i).toString());
-            }
+            bw.write(loadDistributionDTO.getRequestNumbers().toString());
             bw.flush();
             bw.close();
         } catch (IOException ioe) {
