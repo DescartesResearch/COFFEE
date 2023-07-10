@@ -2,7 +2,7 @@
 
 set -x
 
-REPOSITORY="someowner/somerepo"
+REPOSITORY="descartespro/loadgen-tests"
 
 bash build.sh
 bash docker-push-proxy.sh $REPOSITORY
