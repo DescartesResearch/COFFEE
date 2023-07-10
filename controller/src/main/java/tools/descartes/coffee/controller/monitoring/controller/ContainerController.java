@@ -252,7 +252,7 @@ public class ContainerController {
     public void addLoadDistribution(@RequestParam String version, @RequestBody LoadDistributionDTO loadDistributionDTO) {
         loadDistributionService.add(new LoadDistribution(loadDistributionDTO.getTotalRuntime(), loadDistributionDTO.getReceivedRequests(), loadDistributionDTO.getRequestNumbers()));
         File file = new File("./Instance" + temporaryLoadCounter + ".json");
-        temporaryLoadCounter = temporaryLoadCounter + 1
+        temporaryLoadCounter = temporaryLoadCounter + 1;
         if (!file.exists()) {
             file.createNewFile();
         }
