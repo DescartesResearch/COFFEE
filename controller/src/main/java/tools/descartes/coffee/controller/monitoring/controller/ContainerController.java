@@ -251,6 +251,10 @@ public class ContainerController {
     @PostMapping("/loaddist")
     public void addLoadDistribution(@RequestParam String version, @RequestBody LoadDistributionDTO loadDistributionDTO) {
         loadDistributionService.add(new LoadDistribution(loadDistributionDTO.getTotalRuntime(), loadDistributionDTO.getReceivedRequests(), loadDistributionDTO.getRequestNumbers()));
+        writeLoadFile(loadDistributionDTO);
+    }
+
+    private synchronized void writeLoadFile(LoadDistributionDTO loadDistributionDTO) {
         try {
             File file = new File("./Instance" + temporaryLoadCounter + ".json");
             temporaryLoadCounter = temporaryLoadCounter + 1;
