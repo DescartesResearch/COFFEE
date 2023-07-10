@@ -251,18 +251,22 @@ public class ContainerController {
     @PostMapping("/loaddist")
     public void addLoadDistribution(@RequestParam String version, @RequestBody LoadDistributionDTO loadDistributionDTO) {
         loadDistributionService.add(new LoadDistribution(loadDistributionDTO.getTotalRuntime(), loadDistributionDTO.getReceivedRequests(), loadDistributionDTO.getRequestNumbers()));
-        File file = new File("./Instance" + temporaryLoadCounter + ".json");
-        temporaryLoadCounter = temporaryLoadCounter + 1;
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        FileWriter fw = new FileWriter(file);
-        BufferedWriter bw = new BufferedWriter(fw);
+        try {
+            File file = new File("./Instance" + temporaryLoadCounter + ".json");
+            temporaryLoadCounter = temporaryLoadCounter + 1;
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
 
-        for (int i = 0; i < loadDistributionDTO.getRequestNumbers().size(); i++) {
-            bw.write(loadDistributionDTO.getRequestNumbers().get(i).toString());
+            for (int i = 0; i < loadDistributionDTO.getRequestNumbers().size(); i++) {
+                bw.write(loadDistributionDTO.getRequestNumbers().get(i).toString());
+            }
+            bw.flush();
+            bw.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-        bw.flush();
-        bw.close();
     }
 }
