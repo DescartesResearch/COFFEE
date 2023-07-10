@@ -1,5 +1,7 @@
 package tools.descartes.coffee.shared;
 
+import java.util.List;
+
 public class LoadDistributionDTO {
     private long receivedRequests;
     private long totalRuntime;
