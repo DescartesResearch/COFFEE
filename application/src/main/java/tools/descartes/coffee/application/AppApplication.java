@@ -51,6 +51,7 @@ public class AppApplication {
         LoadDistributionDTO loadDTO = new LoadDistributionDTO();
         loadDTO.setTotalRuntime(totalRuntime);
         loadDTO.setReceivedRequests(loadCounter.getReceivedRequests());
+        loadDTO.setRequestNumbers(loadCounter.getRequestNumbers());
         AppUtils.sendReceivedRequests(appControllerAddress, appControllerPort, loadDTO);
         AppUtils.sendContainerTimestamp(appControllerAddress, appControllerPort, "stop", endTime);
     }

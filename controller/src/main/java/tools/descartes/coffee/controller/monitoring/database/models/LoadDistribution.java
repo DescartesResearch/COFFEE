@@ -15,13 +15,16 @@ public class LoadDistribution {
 
     public long receivedRequests;
 
+    public String requestNumbers;
+
     protected LoadDistribution() {
 
     }
 
-    public LoadDistribution(long totalRunTime, long receivedRequests) {
+    public LoadDistribution(long totalRunTime, long receivedRequests, String requestNumbers) {
         this.totalRunTime = totalRunTime;
         this.receivedRequests = receivedRequests;
+        this.requestNumbers = requestNumbers;
     }
 
     public long getTotalRunTime() {
@@ -30,6 +33,10 @@ public class LoadDistribution {
 
     public long getReceivedRequests() {
         return receivedRequests;
+    }
+
+    public String getRequestNumbers() {
+        return requestNumbers;
     }
 
     @Override

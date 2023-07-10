@@ -3,6 +3,7 @@ package tools.descartes.coffee.shared;
 public class LoadDistributionDTO {
     private long receivedRequests;
     private long totalRuntime;
+    private List<Integer> requestNumbers;
 
     public long getReceivedRequests() {
         return receivedRequests;
@@ -18,5 +19,13 @@ public class LoadDistributionDTO {
 
     public void setTotalRuntime(long totalRuntime) {
         this.totalRuntime = totalRuntime;
+    }
+
+    public List<Integer> getRequestNumbers() {
+        return requestNumbers;
+    }
+
+    public void setRequestNumbers(List<Integer> requestNumbers) {
+        this.requestNumbers = requestNumbers;
     }
 }

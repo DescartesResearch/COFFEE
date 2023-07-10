@@ -247,6 +247,6 @@ public class ContainerController {
 
     @PostMapping("/loaddist")
     public void addLoadDistribution(@RequestParam String version, @RequestBody LoadDistributionDTO loadDistributionDTO) {
-        loadDistributionService.add(new LoadDistribution(loadDistributionDTO.getTotalRuntime(), loadDistributionDTO.getReceivedRequests()));
+        loadDistributionService.add(new LoadDistribution(loadDistributionDTO.getTotalRuntime(), loadDistributionDTO.getReceivedRequests(), loadDistributionDTO.getRequestNumbers().toString()));
     }
 }
