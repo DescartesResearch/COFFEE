@@ -136,13 +136,12 @@ public final class KubeUtils {
 
             port = new V1ServicePort()
                     .name(kubernetesProperties.getNaming().getPort())
-                    .port(clusterProperties.getAppContainerPort())
+                    .port(60000)
                     .protocol("TCP")
-                    .nodePort(kubernetesProperties.getApplicationNodePort())
                     .targetPort(new IntOrString(clusterProperties.getAppContainerPort()));
         }
 
-        serviceSpec = new V1ServiceSpec().type("NodePort")
+        serviceSpec = new V1ServiceSpec().type("LoadBalancer")
                 .ports(List.of(port))
                 .selector(label);
 
