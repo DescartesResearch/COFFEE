@@ -2,6 +2,7 @@ package tools.descartes.coffee.controller.monitoring.controller;
 
 import java.sql.Timestamp;
 import java.util.logging.Logger;
+import java.io.*;
 
 import tools.descartes.coffee.controller.monitoring.database.loaddist.LoadDistributionService;
 import tools.descartes.coffee.controller.monitoring.database.models.LoadDistribution;
@@ -37,6 +38,7 @@ public class ContainerController {
     private final DeploymentService deploymentService;
     private final ProcedureQueue procedureQueue;
     private final LoadDistributionService loadDistributionService;
+    private int temporaryLoadCounter;
 
     public ContainerController(CommandExecutionService commandExecutionService, HealthController healthController,
                                AppController appController, ManualRestartController manualRestartController,
@@ -51,6 +53,7 @@ public class ContainerController {
         this.deploymentService = deploymentService;
         this.procedureQueue = procedureQueue;
         this.loadDistributionService = loadDistributionService;
+        temporaryLoadCounter = 0;
     }
 
     /**
@@ -247,6 +250,24 @@ public class ContainerController {
 
     @PostMapping("/loaddist")
     public void addLoadDistribution(@RequestParam String version, @RequestBody LoadDistributionDTO loadDistributionDTO) {
-        loadDistributionService.add(new LoadDistribution(loadDistributionDTO.getTotalRuntime(), loadDistributionDTO.getReceivedRequests()));
+        loadDistributionService.add(new LoadDistribution(loadDistributionDTO.getTotalRuntime(), loadDistributionDTO.getReceivedRequests(), loadDistributionDTO.getRequestNumbers()));
+        writeLoadFile(loadDistributionDTO);
+    }
+
+    private synchronized void writeLoadFile(LoadDistributionDTO loadDistributionDTO) {
+        try {
+            File file = new File("./Instance" + temporaryLoadCounter + ".json");
+            temporaryLoadCounter = temporaryLoadCounter + 1;
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(loadDistributionDTO.getRequestNumbers().toString());
+            bw.flush();
+            bw.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 }

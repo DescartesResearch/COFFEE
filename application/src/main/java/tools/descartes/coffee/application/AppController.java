@@ -117,8 +117,9 @@ public class AppController {
     }
 
     @GetMapping("/load")
-    public String load() {
-        loadCounter.addLoad();
+    public String load(@RequestParam(value = "number") String requestNumber) {
+        loadCounter.addLoad(Integer.parseInt(requestNumber));
+        /*
         long start = System.currentTimeMillis();
         logger.info("Generating Load ... ");
 
@@ -132,7 +133,7 @@ public class AppController {
 
         long end = System.currentTimeMillis();
         logger.info("Generated Load for " + (end - start) + " ms.");
-
+        */
         return "load generated";
     }
 

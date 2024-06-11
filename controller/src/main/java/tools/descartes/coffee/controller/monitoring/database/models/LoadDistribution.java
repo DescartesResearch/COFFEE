@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.util.List;
 
 @Entity
 public class LoadDistribution {
@@ -15,13 +17,17 @@ public class LoadDistribution {
 
     public long receivedRequests;
 
+    @Transient
+    public List<Integer> requestNumbers;
+
     protected LoadDistribution() {
 
     }
 
-    public LoadDistribution(long totalRunTime, long receivedRequests) {
+    public LoadDistribution(long totalRunTime, long receivedRequests, List<Integer> requestNumbers) {
         this.totalRunTime = totalRunTime;
         this.receivedRequests = receivedRequests;
+        this.requestNumbers = requestNumbers;
     }
 
     public long getTotalRunTime() {
@@ -30,6 +36,10 @@ public class LoadDistribution {
 
     public long getReceivedRequests() {
         return receivedRequests;
+    }
+
+    public List<Integer> getRequestNumbers() {
+        return requestNumbers;
     }
 
     @Override

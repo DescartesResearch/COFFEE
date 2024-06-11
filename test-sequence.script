@@ -1,5 +1,5 @@
 seq
-start 1
-delay 10
-remove 1
+start 10
+delay 600
+remove 10
 endseq
