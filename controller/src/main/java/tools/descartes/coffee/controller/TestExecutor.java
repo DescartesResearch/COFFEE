@@ -27,6 +27,7 @@ public class TestExecutor implements Runnable {
     private final HealthRestartReporter healthRestartReporter;
     private final UpdateReporter updateReporter;
     private final NetworkingReporter networkingReporter;
+    private final StorageReporter storageReporter;
     private final CsvExporter csvExporter;
     private final SummaryExporter summaryExporter;
     private final ClusterClientWrapper clusterClientWrapper;
@@ -38,7 +39,7 @@ public class TestExecutor implements Runnable {
     public TestExecutor(ControllerProperties controllerProperties,
                         LoadGenerator loadGenerator, CommandReporter commandReporter,
                         CrashRestartReporter crashRestartReporter, HealthRestartReporter healthRestartReporter,
-                        UpdateReporter updateReporter, NetworkingReporter networkingReporter,
+                        UpdateReporter updateReporter, NetworkingReporter networkingReporter, StorageReporter storageReporter,
                         CsvExporter csvExporter, SummaryExporter summaryExporter, ClusterClientWrapper clusterClientWrapper,
                         ScriptBuilder scriptBuilder) {
         this.controllerProperties = controllerProperties;
@@ -48,6 +49,7 @@ public class TestExecutor implements Runnable {
         this.healthRestartReporter = healthRestartReporter;
         this.updateReporter = updateReporter;
         this.networkingReporter = networkingReporter;
+        this.storageReporter = storageReporter;
         this.csvExporter = csvExporter;
         this.summaryExporter = summaryExporter;
         this.clusterClientWrapper = clusterClientWrapper;
@@ -142,6 +144,7 @@ public class TestExecutor implements Runnable {
         healthRestartReporter.report();
         updateReporter.report();
         networkingReporter.report();
+        storageReporter.report();
 
         if (controllerProperties.isExportResults()) {
             summaryExporter.cleanUpSummaryExport();

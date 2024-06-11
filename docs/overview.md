@@ -33,20 +33,21 @@ This sequence consists of three steps. First, we start one instance of the test 
 Finally, we remove our deployed instance again using the `remove` command. The COFFEE framework will execute this test script and collects associated metrics to each command, such as the container
 readiness time for the start command. More advanced scripts can be found in our [examples folder](https://github.com/DescartesResearch/COFFEE/tree/main/examples). The following table gives an overview of supported commands:
 
-| Command            | Description                                        |
-|--------------------|----------------------------------------------------|
-| START `n`          | Starts `n` test app instances                      |
-| RESTART `n`        | Restarts `n` test app instances                    |
-| HEALTH `n`         | Sets unhealthy flag in `n` test app instances      |
-| CRASH `n`          | Causes crash of `n` test app instances             |
-| UPDATE `n`         | Updates `n` test app instances (changes image)     |
-| NETWORK            | Measures round-trip time between running instances |
-| REMOVE `n`         | Shuts down `n` test app instances                  |
-| LOAD / ENDLOAD     | Starts/ends load generation                        |
-| SEQ / ENDSEQ       | Starts/ends a sequence                             |
-| LOOP `n` / ENDLOOP | Starts/ends a loop with `n` iterations             |
-| OFFSET `t`         | Invokes next command after `t` seconds             |
-| DELAY `t`          | Pauses a sequence/loop for `t` seconds             |
+| Command            | Description                                                        |
+|--------------------|--------------------------------------------------------------------|
+| START `n`          | Starts `n` test app instances                                      |
+| RESTART `n`        | Restarts `n` test app instances                                    |
+| HEALTH `n`         | Sets unhealthy flag in `n` test app instances                      |
+| CRASH `n`          | Causes crash of `n` test app instances                             |
+| UPDATE `n`         | Updates `n` test app instances (changes image)                     |
+| NETWORK            | Measures round-trip time between running instances                 |
+| STORAGE            | Measures IO metrics for file read and write at one random instance |
+| REMOVE `n`         | Shuts down `n` test app instances                                  |
+| LOAD / ENDLOAD     | Starts/ends load generation                                        |
+| SEQ / ENDSEQ       | Starts/ends a sequence                                             |
+| LOOP `n` / ENDLOOP | Starts/ends a loop with `n` iterations                             |
+| OFFSET `t`         | Invokes next command after `t` seconds                             |
+| DELAY `t`          | Pauses a sequence/loop for `t` seconds                             |
 
 ## COFFEE controller
 
