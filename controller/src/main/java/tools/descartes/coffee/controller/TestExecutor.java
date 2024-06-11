@@ -84,11 +84,15 @@ public class TestExecutor implements Runnable {
             logger.log(Level.SEVERE, "ScriptParsingException during load of procedure", ioe);
             throw new IllegalStateException("ScriptParsingException during load of procedure", ioe);
         }
+
+        boolean loadGenNeeded = Arrays.stream(procedures).anyMatch(BaseProcedure::needsLoadGenerator);
+        boolean storageNeeded = Arrays.stream(procedures).anyMatch(BaseProcedure::needsPersistentStorage);
+
         orchestratorClient.connect();
 
         // TODO: remove clear
         orchestratorClient.clear();
-        orchestratorClient.init();
+        orchestratorClient.init(storageNeeded);
 
         /*
          * since the load balancer uses information from the client initialization the
@@ -97,7 +101,7 @@ public class TestExecutor implements Runnable {
          * According to experience, settings may not yet be fully adopted, so an
          * additional delay is set here
          */
-        if (Arrays.stream(procedures).anyMatch(BaseProcedure::needsLoadGenerator)) {
+        if (loadGenNeeded) {
             delay(20);
             loadGenerator.setup();
         }

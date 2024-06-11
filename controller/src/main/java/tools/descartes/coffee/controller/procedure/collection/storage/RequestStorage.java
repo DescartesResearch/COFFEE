@@ -113,4 +113,9 @@ public class RequestStorage extends SimpleReportProcedure {
         // TBD no cluster event subscription
     }
 
+    @Override
+    public boolean needsPersistentStorage() {
+        return true;
+    }
+
 }

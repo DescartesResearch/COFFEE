@@ -40,4 +40,8 @@ public abstract class BaseProcedure implements Runnable {
     public boolean needsLoadGenerator() {
         return false;
     }
+
+    public boolean needsPersistentStorage() {
+        return false;
+    }
 }

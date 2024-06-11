@@ -64,9 +64,10 @@ public class KubernetesClient extends BaseClusterClient {
     }
 
     @Override
-    public void init() {
+    public void init(boolean persistentStorageNeeded) {
 
         boolean namespacePresent = this.isNamespaceCreated();
+        boolean pvcPresent = this.isPvcCreated();
         boolean servicePresent = this.isServiceCreated();
         boolean deploymentPresent = this.isDeploymentCreated();
 
@@ -74,8 +75,12 @@ public class KubernetesClient extends BaseClusterClient {
             this.createNamespace();
         }
 
+        if (!pvcPresent) {
+            this.createPersistentVolumeClaim();
+        }
+
         if (!deploymentPresent) {
-            this.createDeployment(false);
+            this.createDeployment(false, persistentStorageNeeded);
         } else {
             this.scaleDownDeployedPods();
         }
@@ -148,6 +153,18 @@ public class KubernetesClient extends BaseClusterClient {
         return namespaceNames.contains(kubernetesProperties.getNaming().getNamespace());
     }
 
+    private boolean isPvcCreated() {
+        V1PersistentVolumeClaimList pvcs = callAPI("listNamespacedPersistentVolumeClaim",
+                () -> getAPI().listNamespacedPersistentVolumeClaim(kubernetesProperties.getNaming().getNamespace(), null, null, null,
+                        null, null, null, null, null, null, null));
+
+        List<String> pvcNames = pvcs.getItems().stream()
+                .map(pvc -> pvc.getMetadata().getName())
+                .collect(Collectors.toList());
+
+        return pvcNames.contains("storage-pvc");
+    }
+
     private boolean isProxyServiceCreated() {
         return this.isServiceCreated(kubernetesProperties.getNaming().getProxyService());
     }
@@ -196,11 +213,18 @@ public class KubernetesClient extends BaseClusterClient {
                 kubeComponents.getApplicationNamespace());
     }
 
-    private void createDeployment(boolean isProxyContext) {
+    private void createPersistentVolumeClaim() {
+        callAPI("createNamespacedPersistentVolumeClaim",
+                (newPvc) -> getAPI().createNamespacedPersistentVolumeClaim(kubernetesProperties.getNaming().getNamespace(),
+                        newPvc, null, null, null),
+                KubeUtils.createPvc(kubernetesProperties));
+    }
+
+    private void createDeployment(boolean isProxyContext, boolean persistentStorageNeeded) {
         callAPI("createNamespacedDeployment",
                 (newDeployment) -> getAppsAPI().createNamespacedDeployment(kubernetesProperties.getNaming().getNamespace(),
                         newDeployment, null, null, null),
-                KubeUtils.createDeployment(controllerProperties, clusterProperties, kubernetesProperties, isProxyContext));
+                KubeUtils.createDeployment(controllerProperties, clusterProperties, kubernetesProperties, isProxyContext, persistentStorageNeeded));
     }
 
     private void createService(Boolean isProxyContext) {

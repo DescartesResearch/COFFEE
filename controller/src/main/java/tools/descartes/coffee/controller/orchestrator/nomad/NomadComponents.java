@@ -20,6 +20,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class NomadComponents {
 
+        private final ControllerProperties controllerProperties;
+        private final ClusterProperties clusterProperties;
+        private final NomadProperties nomadProperties;
+
         private final UpdateStrategy rollingUpdateStrategy;
         private final RestartPolicy restartPolicy;
 
@@ -47,6 +51,12 @@ public class NomadComponents {
 
         public NomadComponents(ControllerProperties controllerProperties, ClusterProperties clusterProperties,
                                NomadProperties nomadProperties) {
+                this.controllerProperties = controllerProperties;
+                this.clusterProperties = clusterProperties;
+                this.nomadProperties = nomadProperties;
+        }
+
+        public void init(boolean persistentStorageNeeded) {
                 rollingUpdateStrategy = NomadUtils.getUpdateStrategy(nomadProperties);
                 restartPolicy = NomadUtils.getRestartPolicy(nomadProperties);
                 taskGroupService = NomadUtils.createGroupService(clusterProperties, nomadProperties, false);
@@ -57,8 +67,8 @@ public class NomadComponents {
                 proxyTaskGroupNetwork = NomadUtils.createGroupNetwork(clusterProperties, nomadProperties, true);
                 proxyTaskConfig = NomadUtils.createTaskConfig(clusterProperties, nomadProperties, true, false);
                 namespace = NomadUtils.createNamespace(nomadProperties);
-                task = NomadUtils.createTask(this, nomadProperties, false, false);
-                taskGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, false, false);
+                task = NomadUtils.createTask(this, nomadProperties, false, false, persistentStorageNeeded);
+                taskGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, false, false, persistentStorageNeeded);
                 taskUpdate = NomadUtils.createTask(this, nomadProperties, false, true);
                 taskUpdateGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, false, true);
                 proxyTask = NomadUtils.createTask(this, nomadProperties, true, false);
