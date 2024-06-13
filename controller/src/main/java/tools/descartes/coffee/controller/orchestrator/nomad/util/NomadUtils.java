@@ -111,13 +111,17 @@ public final class NomadUtils {
      * @return
      */
     public static Job createJob(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isV2Update, int replicas) {
+        return createJob(nomadComponents, nomadProperties, isV2Update, replicas, false);
+    }
+
+    public static Job createJob(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isV2Update, int replicas, boolean persistentStorageNeeded) {
         Job job = new Job();
 
         job.setName(nomadProperties.getNaming().getJob());
         job.setId(nomadProperties.getNaming().getJobId());
         job.setType("service");
         job.setNamespace(nomadProperties.getNaming().getNamespace());
-        job.setTaskGroups(List.of(createAppTaskGroupByCount(nomadComponents, nomadProperties, isV2Update, replicas), nomadComponents.getProxyTaskGroup()));
+        job.setTaskGroups(List.of(createAppTaskGroupByCount(nomadComponents, nomadProperties, isV2Update, replicas, persistentStorageNeeded), nomadComponents.getProxyTaskGroup()));
         job.setDatacenters(List.of("dc1"));
 
         return job;
@@ -193,7 +197,7 @@ public final class NomadUtils {
             vols.put(nomadProperties.getStorage().getVolumeSource(), new VolumeRequest()
                     .setType(nomadProperties.getStorage().getVolumeType())
                     .setSource(nomadProperties.getStorage().getVolumeSource())
-                    .setReadOnly(false))
+                    .setReadOnly(false));
             taskGroup.setVolumes(vols);
         }
 

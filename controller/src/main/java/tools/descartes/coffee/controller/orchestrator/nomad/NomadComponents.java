@@ -20,34 +20,34 @@ import org.springframework.stereotype.Component;
 @Component
 public class NomadComponents {
 
-        private final ControllerProperties controllerProperties;
-        private final ClusterProperties clusterProperties;
-        private final NomadProperties nomadProperties;
+        private ControllerProperties controllerProperties;
+        private ClusterProperties clusterProperties;
+        private NomadProperties nomadProperties;
 
-        private final UpdateStrategy rollingUpdateStrategy;
-        private final RestartPolicy restartPolicy;
+        private UpdateStrategy rollingUpdateStrategy;
+        private RestartPolicy restartPolicy;
 
         /* TEST APP */
-        private final Service taskGroupService;
-        private final NetworkResource taskGroupNetwork;
-        private final Map<String, Object> taskConfig;
-        private final Task task;
-        private final TaskGroup taskGroup;
+        private Service taskGroupService;
+        private NetworkResource taskGroupNetwork;
+        private Map<String, Object> taskConfig;
+        private Task task;
+        private TaskGroup taskGroup;
 
         /* TEST APP - UPDATE */
-        private final Map<String, Object> taskUpdateConfig;
-        private final Task taskUpdate;
-        private final TaskGroup taskUpdateGroup;
+        private Map<String, Object> taskUpdateConfig;
+        private Task taskUpdate;
+        private TaskGroup taskUpdateGroup;
 
         /* PROXY */
-        private final Service proxyTaskGroupService;
-        private final NetworkResource proxyTaskGroupNetwork;
-        private final Map<String, Object> proxyTaskConfig;
-        private final Task proxyTask;
-        private final TaskGroup proxyTaskGroup;
+        private Service proxyTaskGroupService;
+        private NetworkResource proxyTaskGroupNetwork;
+        private Map<String, Object> proxyTaskConfig;
+        private Task proxyTask;
+        private TaskGroup proxyTaskGroup;
 
-        private final Namespace namespace;
-        private final Job job;
+        private Namespace namespace;
+        private Job job;
 
         public NomadComponents(ControllerProperties controllerProperties, ClusterProperties clusterProperties,
                                NomadProperties nomadProperties) {
@@ -69,10 +69,10 @@ public class NomadComponents {
                 namespace = NomadUtils.createNamespace(nomadProperties);
                 task = NomadUtils.createTask(this, nomadProperties, false, false, persistentStorageNeeded);
                 taskGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, false, false, persistentStorageNeeded);
-                taskUpdate = NomadUtils.createTask(this, nomadProperties, false, true);
-                taskUpdateGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, false, true);
-                proxyTask = NomadUtils.createTask(this, nomadProperties, true, false);
-                proxyTaskGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, true, false);
+                taskUpdate = NomadUtils.createTask(this, nomadProperties, false, true, persistentStorageNeeded);
+                taskUpdateGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, false, true, persistentStorageNeeded);
+                proxyTask = NomadUtils.createTask(this, nomadProperties, true, false, persistentStorageNeeded);
+                proxyTaskGroup = NomadUtils.createTaskGroup(this, controllerProperties, nomadProperties, true, false, persistentStorageNeeded);
                 job = NomadUtils.createDefaultJob(this, nomadProperties);
         }
 

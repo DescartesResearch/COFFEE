@@ -131,7 +131,7 @@ public class AppController {
         long[] readTime = new long[5];
         for (int r = 0; r < 5; r++) {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 1000000; i++) {
                 String uuid = UUID.randomUUID().toString();
                 builder.append(uuid);
                 builder.append("\n");
@@ -139,14 +139,14 @@ public class AppController {
             String finalString = builder.toString();
             long timeAfterWrite;
             long timeBeforeWrite = System.currentTimeMillis();
-            try (PrintWriter out = new PrintWriter("/var/log/test.txt")) {
+            try (PrintWriter out = new PrintWriter("/var/log/test" + r + ".txt")) {
                 out.println(finalString);
                 timeAfterWrite = System.currentTimeMillis();
             } catch (FileNotFoundException fnfe) {
-                logger.error("FileNotFoundException while write storage request: " + fnfe.toString());
+                logger.info("FileNotFoundException while write storage request: " + fnfe.toString());
                 timeAfterWrite = timeBeforeWrite - 1;
             } catch (SecurityException se) {
-                logger.error("SecurityException while write storage request: " + se.toString());
+                logger.info("SecurityException while write storage request: " + se.toString());
                 timeAfterWrite = timeBeforeWrite - 1;
             }
             writtenBytes[r] = finalString.getBytes().length;
@@ -155,15 +155,15 @@ public class AppController {
             long readBytes;
             long timeBeforeRead = System.currentTimeMillis();
             try {
-                byte[] read = Files.readAllBytes(Path.of("/var/log/test.txt"));
+                byte[] read = Files.readAllBytes(Path.of("/var/log/test" + r + ".txt"));
                 timeAfterRead = System.currentTimeMillis();
                 readBytes = read.length;
             } catch (IOException ioe) {
-                logger.error("IOException while read storage request: " + ioe.toString());
+                logger.info("IOException while read storage request: " + ioe.toString());
                 timeAfterRead = timeBeforeRead - 1;
                 readBytes = 0;
             } catch (SecurityException se) {
-                logger.error("SecurityException while read storage request: " + se.toString());
+                logger.info("SecurityException while read storage request: " + se.toString());
                 timeAfterRead = timeBeforeRead - 1;
                 readBytes = 0;
             }

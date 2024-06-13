@@ -13,16 +13,16 @@ public class StorageTime {
     public Long id;
 
     /** number of written bytes */
-    private long writtenBytes;
+    public long writtenBytes;
 
     /** total write time in milliseconds */
-    private long writeTimeMillis;
+    public long writeTimeMillis;
 
     /** number of read bytes */
-    private long readBytes;
+    public long readBytes;
 
     /** total read time in milliseconds */
-    private long readTimeMillis;
+    public long readTimeMillis;
 
     protected StorageTime() {
     }

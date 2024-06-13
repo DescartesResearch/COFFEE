@@ -15,7 +15,7 @@ public class StorageController {
 
     private final StorageService storageService;
 
-    public StorageController(StorageSerivce storageSerivce) {
+    public StorageController(StorageService storageSerivce) {
         this.storageService = storageSerivce;
     }
 

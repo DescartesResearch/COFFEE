@@ -97,7 +97,7 @@ public final class KubeUtils {
         if (!isProxyPod && persistentStorageNeeded) {
             V1VolumeMount volumeMount = new V1VolumeMount().mountPath("/var/log").name("storage-volume");
             List<V1VolumeMount> mounts = List.of(volumeMount);
-            container.setVolumeMounts(mounts);
+            container.volumeMounts(mounts);
         }
 
         if (!isProxyPod && clusterProperties.isAppHealthCheck()) {
@@ -131,7 +131,7 @@ public final class KubeUtils {
                     .name("storage-volume")
                     .persistentVolumeClaim(new V1PersistentVolumeClaimVolumeSource().claimName("storage-pvc"));
             List<V1Volume> volumes = List.of(volume);
-            podSpec.setVolumes(volumes);
+            podSpec.volumes(volumes);
         }
 
         return podSpec;

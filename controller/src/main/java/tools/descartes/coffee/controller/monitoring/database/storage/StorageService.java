@@ -19,7 +19,7 @@ public class StorageService {
     public List<StorageTime> findAll() {
         var it = storageRepo.findAll();
 
-        var times = new ArrayList<>();
+        ArrayList<StorageTime> times = new ArrayList<>();
         it.forEach(times::add);
 
         return times;

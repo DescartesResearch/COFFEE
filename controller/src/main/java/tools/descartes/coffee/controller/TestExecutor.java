@@ -88,6 +88,9 @@ public class TestExecutor implements Runnable {
         boolean loadGenNeeded = Arrays.stream(procedures).anyMatch(BaseProcedure::needsLoadGenerator);
         boolean storageNeeded = Arrays.stream(procedures).anyMatch(BaseProcedure::needsPersistentStorage);
 
+        logger.info("Load Generator Needed: " + loadGenNeeded);
+        logger.info("Storage Needed: " + storageNeeded);
+
         orchestratorClient.connect();
 
         // TODO: remove clear
