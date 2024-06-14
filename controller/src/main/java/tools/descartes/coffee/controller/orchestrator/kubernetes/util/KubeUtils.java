@@ -30,9 +30,13 @@ public final class KubeUtils {
     public static V1PersistentVolumeClaim createPvc(KubernetesProperties kubernetesProperties) {
         Map<String, Quantity> storageRequests = new HashMap<>();
         storageRequests.put("storage", new Quantity("100Mi"));
+        V1PersistentVolumeClaimSpec spec = new V1PersistentVolumeClaimSpec().accessModes(List.of("ReadWriteOnce")).resources(new V1ResourceRequirements().requests(storageRequests));
+        if (kubernetesProperties.getStorageClassName() != null) {
+            spec.setStorageClassName(kubernetesProperties.getStorageClassName());
+        }
         return new V1PersistentVolumeClaim()
                 .metadata(new V1ObjectMeta().name("storage-pvc").namespace(kubernetesProperties.getNaming().getNamespace()))
-                .spec(new V1PersistentVolumeClaimSpec().accessModes(List.of("ReadWriteOnce")).resources(new V1ResourceRequirements().requests(storageRequests)));
+                .spec(spec);
     }
 
     public static V1Deployment createDeployment(ControllerProperties controllerProperties, ClusterProperties clusterProperties, KubernetesProperties kubernetesProperties, boolean isProxyContext, boolean persistentStorageNeeded) {

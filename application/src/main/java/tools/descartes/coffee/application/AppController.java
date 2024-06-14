@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -125,13 +126,14 @@ public class AppController {
 
     @GetMapping("/storage")
     public StorageData storage() {
-        long[] writtenBytes = new long[5];
-        long[] writeTime = new long[5];
-        long[] readBytesArray = new long[5];
-        long[] readTime = new long[5];
-        for (int r = 0; r < 5; r++) {
+        long[] writtenBytes = new long[30];
+        long[] writeTime = new long[30];
+        long[] readBytesArray = new long[30];
+        long[] readTime = new long[30];
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int r = 0; r < 30; r++) {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < 1000000; i++) {
+            for (int i = 0; i < random.nextInt(500000, 100000000); i++) {
                 String uuid = UUID.randomUUID().toString();
                 builder.append(uuid);
                 builder.append("\n");

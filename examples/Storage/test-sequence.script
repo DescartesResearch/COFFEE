@@ -1,0 +1,6 @@
+seq
+start 1
+delay 30
+storage
+remove 1
+endseq

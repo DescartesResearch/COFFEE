@@ -76,7 +76,7 @@ public class RequestStorage extends SimpleReportProcedure {
 
             logger.info("Network Request to : " + address);
 
-            HttpResponse<String> response = HttpUtils.get(proxyAddress, "http://" + address + "/storage");
+            HttpResponse<String> response = HttpUtils.get(proxyAddress, "http://" + address + "/storage", 0);
 
             // TODO: (Later) add error handling (e.g. timeout)
             logger.info("Network response: " + response);
