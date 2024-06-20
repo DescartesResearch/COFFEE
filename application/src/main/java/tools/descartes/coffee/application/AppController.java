@@ -1,9 +1,16 @@
 package tools.descartes.coffee.application;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tools.descartes.coffee.shared.HttpUtils;
 import tools.descartes.coffee.shared.NetworkingData;
+import tools.descartes.coffee.shared.StorageData;
 
 @RestController
 public class AppController {
@@ -114,6 +122,57 @@ public class AppController {
         long time = System.currentTimeMillis();
         logger.info("received in-cluster network request; returning current time to requesting container");
         return time;
+    }
+
+    @GetMapping("/storage")
+    public StorageData storage() {
+        long[] writtenBytes = new long[30];
+        long[] writeTime = new long[30];
+        long[] readBytesArray = new long[30];
+        long[] readTime = new long[30];
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int r = 0; r < 30; r++) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < random.nextInt(500000, 100000000); i++) {
+                String uuid = UUID.randomUUID().toString();
+                builder.append(uuid);
+                builder.append("\n");
+            }
+            String finalString = builder.toString();
+            long timeAfterWrite;
+            long timeBeforeWrite = System.currentTimeMillis();
+            try (PrintWriter out = new PrintWriter("/var/log/test" + r + ".txt")) {
+                out.println(finalString);
+                timeAfterWrite = System.currentTimeMillis();
+            } catch (FileNotFoundException fnfe) {
+                logger.info("FileNotFoundException while write storage request: " + fnfe.toString());
+                timeAfterWrite = timeBeforeWrite - 1;
+            } catch (SecurityException se) {
+                logger.info("SecurityException while write storage request: " + se.toString());
+                timeAfterWrite = timeBeforeWrite - 1;
+            }
+            writtenBytes[r] = finalString.getBytes().length;
+            writeTime[r] = timeAfterWrite - timeBeforeWrite;
+            long timeAfterRead;
+            long readBytes;
+            long timeBeforeRead = System.currentTimeMillis();
+            try {
+                byte[] read = Files.readAllBytes(Path.of("/var/log/test" + r + ".txt"));
+                timeAfterRead = System.currentTimeMillis();
+                readBytes = read.length;
+            } catch (IOException ioe) {
+                logger.info("IOException while read storage request: " + ioe.toString());
+                timeAfterRead = timeBeforeRead - 1;
+                readBytes = 0;
+            } catch (SecurityException se) {
+                logger.info("SecurityException while read storage request: " + se.toString());
+                timeAfterRead = timeBeforeRead - 1;
+                readBytes = 0;
+            }
+            readBytesArray[r] = readBytes;
+            readTime[r] = timeAfterRead - timeBeforeRead;
+        }
+        return new StorageData(writtenBytes, writeTime, readBytesArray, readTime);
     }
 
     @GetMapping("/load")

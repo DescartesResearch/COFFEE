@@ -202,13 +202,22 @@ public final class HttpUtils {
     }
 
     private static HttpRequest buildPostRequest(String uri, int timeoutSeconds) {
-        return HttpRequest.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .uri(URI.create(uri))
-                .header("Content-Type", "application/json")
-                .POST(BodyPublishers.ofString(""))
-                .timeout(Duration.ofSeconds(timeoutSeconds))
-                .build();
+        if (timeoutSeconds > 0) {
+            return HttpRequest.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .uri(URI.create(uri))
+                    .header("Content-Type", "application/json")
+                    .POST(BodyPublishers.ofString(""))
+                    .timeout(Duration.ofSeconds(timeoutSeconds))
+                    .build();
+        } else {
+            return HttpRequest.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .uri(URI.create(uri))
+                    .header("Content-Type", "application/json")
+                    .POST(BodyPublishers.ofString(""))
+                    .build();
+        }
     }
 
     private static HttpRequest buildGetRequest(String uri) {
@@ -232,23 +241,41 @@ public final class HttpUtils {
     }
 
     private static HttpRequest buildGetRequest(String uri, int timeoutSeconds) {
-        return HttpRequest.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .uri(URI.create(uri))
-                .header("Content-Type", "application/json")
-                .GET()
-                .timeout(Duration.ofSeconds(timeoutSeconds))
-                .build();
+        if (timeoutSeconds > 0) {
+            return HttpRequest.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .uri(URI.create(uri))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .timeout(Duration.ofSeconds(timeoutSeconds))
+                    .build();
+        } else {
+            return HttpRequest.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .uri(URI.create(uri))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+        }
     }
 
     private static HttpRequest buildGetRequest(String uri, String bodyJson, int timeoutSeconds) {
-        return HttpRequest.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .uri(URI.create(uri))
-                .header("Content-Type", "application/json")
-                .method("GET", BodyPublishers.ofString(bodyJson))
-                .timeout(Duration.ofSeconds(timeoutSeconds))
-                .build();
+        if (timeoutSeconds > 0) {
+            return HttpRequest.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .uri(URI.create(uri))
+                    .header("Content-Type", "application/json")
+                    .method("GET", BodyPublishers.ofString(bodyJson))
+                    .timeout(Duration.ofSeconds(timeoutSeconds))
+                    .build();
+        } else {
+            return HttpRequest.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .uri(URI.create(uri))
+                    .header("Content-Type", "application/json")
+                    .method("GET", BodyPublishers.ofString(bodyJson))
+                    .build();
+        }
     }
 
     private static String mapToString(Object objectToMap) {

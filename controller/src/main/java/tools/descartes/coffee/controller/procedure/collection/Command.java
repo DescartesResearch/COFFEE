@@ -7,6 +7,7 @@ public enum Command {
     HEALTH,
     CRASH,
     NETWORK,
+    STORAGE,
     UPDATE,
     DELAY,
     LOAD,

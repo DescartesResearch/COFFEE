@@ -18,6 +18,8 @@ public class KubernetesProperties {
     private int applicationNodePort;
     private int proxyNodePort;
     private String ipForLoadAndProxy;
+
+    private String storageClassName;
     private NamingProperties naming;
     private UpdateProperties update;
 
@@ -101,6 +103,17 @@ public class KubernetesProperties {
 
     public void setIpForLoadAndProxy(String ipForLoadAndProxy) {
         this.ipForLoadAndProxy = ipForLoadAndProxy;
+    }
+
+    public String getStorageClassName() {
+        if (storageClassName.equals("NULL")) {
+            return null;
+        }
+        return storageClassName;
+    }
+
+    public void setStorageClassName(String storageClassName) {
+        this.storageClassName = storageClassName;
     }
 
     public NamingProperties getNaming() {

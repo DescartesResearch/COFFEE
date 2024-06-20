@@ -109,6 +109,7 @@ public class ScriptBuilder {
             case "health":
             case "crash":
             case "network":
+            case "storage":
             case "update":
             case "delay":
             case "load":

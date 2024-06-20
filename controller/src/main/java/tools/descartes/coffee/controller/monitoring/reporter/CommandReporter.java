@@ -59,6 +59,7 @@ public class CommandReporter {
 
         reportCommand(Command.UPDATE, "deployment rolling update", commandTimings);
         reportCommand(Command.NETWORK, "container networking", commandTimings);
+        reportCommand(Command.STORAGE, "container storage", commandTimings);
 
         this.logger.info("\n");
     }

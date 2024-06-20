@@ -1,6 +1,7 @@
 package tools.descartes.coffee.controller.orchestrator.nomad.util;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -110,13 +111,17 @@ public final class NomadUtils {
      * @return
      */
     public static Job createJob(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isV2Update, int replicas) {
+        return createJob(nomadComponents, nomadProperties, isV2Update, replicas, false);
+    }
+
+    public static Job createJob(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isV2Update, int replicas, boolean persistentStorageNeeded) {
         Job job = new Job();
 
         job.setName(nomadProperties.getNaming().getJob());
         job.setId(nomadProperties.getNaming().getJobId());
         job.setType("service");
         job.setNamespace(nomadProperties.getNaming().getNamespace());
-        job.setTaskGroups(List.of(createAppTaskGroupByCount(nomadComponents, nomadProperties, isV2Update, replicas), nomadComponents.getProxyTaskGroup()));
+        job.setTaskGroups(List.of(createAppTaskGroupByCount(nomadComponents, nomadProperties, isV2Update, replicas, persistentStorageNeeded), nomadComponents.getProxyTaskGroup()));
         job.setDatacenters(List.of("dc1"));
 
         return job;
@@ -155,11 +160,11 @@ public final class NomadUtils {
 
     /* ### TASK GROUP ### */
 
-    public static TaskGroup createTaskGroup(NomadComponents nomadComponents, ControllerProperties controllerProperties, NomadProperties nomadProperties, boolean isProxy, boolean isUpdate) {
+    public static TaskGroup createTaskGroup(NomadComponents nomadComponents, ControllerProperties controllerProperties, NomadProperties nomadProperties, boolean isProxy, boolean isUpdate, boolean persistentStorageNeeded) {
         if (isProxy) {
             return createProxyTaskGroup(nomadComponents, controllerProperties, nomadProperties);
         } else {
-            return createAppTaskGroupByCount(nomadComponents, nomadProperties, isUpdate, controllerProperties.getInitialReplicas());
+            return createAppTaskGroupByCount(nomadComponents, nomadProperties, isUpdate, controllerProperties.getInitialReplicas(), persistentStorageNeeded);
         }
     }
 
@@ -176,7 +181,7 @@ public final class NomadUtils {
 
     }
 
-    public static TaskGroup createAppTaskGroupByCount(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isUpdate, int count) {
+    public static TaskGroup createAppTaskGroupByCount(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isUpdate, int count, boolean persistentStorageNeeded) {
         TaskGroup taskGroup = new TaskGroup();
 
         taskGroup.setName(nomadProperties.getNaming().getTaskGroup());
@@ -186,6 +191,15 @@ public final class NomadUtils {
         taskGroup.setNetworks(List.of(nomadComponents.getTaskGroupNetwork()));
         taskGroup.setCount(count);
         taskGroup.setRestartPolicy(nomadComponents.getRestartPolicy());
+
+        if (persistentStorageNeeded) {
+            Map<String, VolumeRequest> vols = new HashMap<>();
+            vols.put(nomadProperties.getStorage().getVolumeSource(), new VolumeRequest()
+                    .setType(nomadProperties.getStorage().getVolumeType())
+                    .setSource(nomadProperties.getStorage().getVolumeSource())
+                    .setReadOnly(false));
+            taskGroup.setVolumes(vols);
+        }
 
         return taskGroup;
     }
@@ -254,7 +268,7 @@ public final class NomadUtils {
 
     /* ### TASK ### */
 
-    public static Task createTask(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isProxy, boolean isUpdate) {
+    public static Task createTask(NomadComponents nomadComponents, NomadProperties nomadProperties, boolean isProxy, boolean isUpdate, boolean persistentStorageNeeded) {
         Task task = new Task();
 
         task.setDriver("docker");
@@ -267,6 +281,10 @@ public final class NomadUtils {
             task.setName(nomadProperties.getNaming().getTask());
             // task.setServices(List.of(SERVICE));
             task.setConfig(isUpdate ? nomadComponents.getTaskUpdateConfig() : nomadComponents.getTaskConfig());
+
+            if (persistentStorageNeeded) {
+                task.setVolumeMounts(List.of(new VolumeMount().setDestination("/var/log").setReadOnly(false).setVolume(nomadProperties.getStorage().getVolumeSource())));
+            }
         }
 
         return task;

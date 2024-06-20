@@ -6,9 +6,11 @@ import tools.descartes.coffee.controller.orchestrator.kubernetes.KubernetesClien
 import tools.descartes.coffee.controller.orchestrator.kubernetes.configuration.KubernetesProperties;
 import io.kubernetes.client.custom.IntOrString;
 import io.kubernetes.client.custom.V1Patch;
+import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.models.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +27,19 @@ public final class KubeUtils {
 
     }
 
-    public static V1Deployment createDeployment(ControllerProperties controllerProperties, ClusterProperties clusterProperties, KubernetesProperties kubernetesProperties, boolean isProxyContext) {
+    public static V1PersistentVolumeClaim createPvc(KubernetesProperties kubernetesProperties) {
+        Map<String, Quantity> storageRequests = new HashMap<>();
+        storageRequests.put("storage", new Quantity("100Mi"));
+        V1PersistentVolumeClaimSpec spec = new V1PersistentVolumeClaimSpec().accessModes(List.of("ReadWriteOnce")).resources(new V1ResourceRequirements().requests(storageRequests));
+        if (kubernetesProperties.getStorageClassName() != null) {
+            spec.setStorageClassName(kubernetesProperties.getStorageClassName());
+        }
+        return new V1PersistentVolumeClaim()
+                .metadata(new V1ObjectMeta().name("storage-pvc").namespace(kubernetesProperties.getNaming().getNamespace()))
+                .spec(spec);
+    }
+
+    public static V1Deployment createDeployment(ControllerProperties controllerProperties, ClusterProperties clusterProperties, KubernetesProperties kubernetesProperties, boolean isProxyContext, boolean persistentStorageNeeded) {
         String name;
         Map<String, String> label;
 
@@ -41,15 +55,15 @@ public final class KubeUtils {
                 .metadata(new V1ObjectMeta().name(name)
                         .namespace(kubernetesProperties.getNaming().getNamespace())
                         .labels(label))
-                .spec(createDeploymentSpec(controllerProperties, clusterProperties, kubernetesProperties, isProxyContext));
+                .spec(createDeploymentSpec(controllerProperties, clusterProperties, kubernetesProperties, isProxyContext, persistentStorageNeeded));
     }
 
-    private static V1DeploymentSpec createDeploymentSpec(ControllerProperties controllerProperties, ClusterProperties clusterProperties, KubernetesProperties kubernetesProperties, boolean isProxyContext) {
+    private static V1DeploymentSpec createDeploymentSpec(ControllerProperties controllerProperties, ClusterProperties clusterProperties, KubernetesProperties kubernetesProperties, boolean isProxyContext, boolean persistentStorageNeeded) {
         Map<String, String> label = isProxyContext
                 ? kubernetesProperties.getNaming().getProxyAppLabel()
                 : kubernetesProperties.getNaming().getAppLabel();
 
-        V1PodSpec podSpec = createPodSpec(clusterProperties, kubernetesProperties, isProxyContext);
+        V1PodSpec podSpec = createPodSpec(clusterProperties, kubernetesProperties, isProxyContext, persistentStorageNeeded);
         V1ObjectMeta metadata = new V1ObjectMeta().labels(label);
 
         V1PodTemplateSpec template = new V1PodTemplateSpec().metadata(metadata).spec(podSpec);
@@ -70,7 +84,7 @@ public final class KubeUtils {
                 .selector(selector);
     }
 
-    private static V1PodSpec createPodSpec(ClusterProperties clusterProperties, KubernetesProperties kubernetesProperties, boolean isProxyPod) {
+    private static V1PodSpec createPodSpec(ClusterProperties clusterProperties, KubernetesProperties kubernetesProperties, boolean isProxyPod, boolean persistentStorageNeeded) {
         String image;
         if (isProxyPod) {
             image = clusterProperties.getProxyImage();
@@ -83,6 +97,12 @@ public final class KubeUtils {
         V1Container container = new V1Container().name(kubernetesProperties.getNaming().getContainer())
                 .image(image)
                 .ports(List.of(port));
+
+        if (!isProxyPod && persistentStorageNeeded) {
+            V1VolumeMount volumeMount = new V1VolumeMount().mountPath("/var/log").name("storage-volume");
+            List<V1VolumeMount> mounts = List.of(volumeMount);
+            container.volumeMounts(mounts);
+        }
 
         if (!isProxyPod && clusterProperties.isAppHealthCheck()) {
             V1HTTPGetAction healthCheck = new V1HTTPGetAction().path("/health/check")
@@ -108,6 +128,14 @@ public final class KubeUtils {
 
         if (isProxyPod && clusterProperties.getProxyNodeName() != null) {
             podSpec.nodeName(clusterProperties.getProxyNodeName());
+        }
+
+        if (!isProxyPod && persistentStorageNeeded) {
+            V1Volume volume = new V1Volume()
+                    .name("storage-volume")
+                    .persistentVolumeClaim(new V1PersistentVolumeClaimVolumeSource().claimName("storage-pvc"));
+            List<V1Volume> volumes = List.of(volume);
+            podSpec.volumes(volumes);
         }
 
         return podSpec;

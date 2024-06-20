@@ -39,6 +39,7 @@ public class CommandController {
 
             put(Command.REMOVE, new ConcurrentLinkedQueue<>());
             put(Command.NETWORK, new ConcurrentLinkedQueue<>());
+            put(Command.STORAGE, new ConcurrentLinkedQueue<>());
         }
     };
 
@@ -78,6 +79,21 @@ public class CommandController {
 
         CommandExecutionTime executionTime = new CommandExecutionTime(Command.NETWORK, networkCommandStartTime,
                 networkingFinished);
+        commandExecutionService.add(executionTime);
+    }
+
+    @PostMapping("/end-storage")
+    public void storeStorageCommand(@RequestBody Timestamp storageFinished) {
+        Timestamp storageCommandStartTime = this.commandQueue.get(Command.STORAGE).poll();
+
+        if (storageCommandStartTime == null) {
+            throw new IllegalStateException(
+                    "Error while storing storage command finished time: No storage command start time available.");
+
+        }
+
+        CommandExecutionTime executionTime = new CommandExecutionTime(Command.STORAGE, storageCommandStartTime,
+                storageFinished);
         commandExecutionService.add(executionTime);
     }
 

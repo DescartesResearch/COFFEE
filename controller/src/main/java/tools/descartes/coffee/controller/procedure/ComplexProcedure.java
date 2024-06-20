@@ -49,4 +49,9 @@ public class ComplexProcedure extends BaseProcedure {
     public boolean needsLoadGenerator() {
         return procedures.stream().anyMatch(BaseProcedure::needsLoadGenerator);
     }
+
+    @Override
+    public boolean needsPersistentStorage() {
+        return procedures.stream().anyMatch(BaseProcedure::needsPersistentStorage);
+    }
 }

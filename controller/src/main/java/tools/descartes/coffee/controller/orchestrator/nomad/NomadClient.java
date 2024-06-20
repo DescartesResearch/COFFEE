@@ -125,7 +125,8 @@ public class NomadClient extends BaseClusterClient {
     }
 
     @Override
-    public void init() {
+    public void init(boolean persistentStorageNeeded) {
+        nomadComponents.init(persistentStorageNeeded);
         callAPI("namespace:register", () -> getNamespacesAPI().register(nomadComponents.getNamespace()));
         client.setNamespace(nomadProperties.getNaming().getNamespace());
 

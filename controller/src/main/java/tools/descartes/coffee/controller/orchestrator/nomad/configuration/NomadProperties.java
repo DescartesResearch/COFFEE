@@ -14,6 +14,8 @@ public class NomadProperties {
     private RestartProperties restart;
     private HealthProperties health;
 
+    private StorageProperties storage;
+
     public HAProxyProperties getHaproxy() {
         return haproxy;
     }
@@ -70,6 +72,13 @@ public class NomadProperties {
         this.health = health;
     }
 
+    public StorageProperties getStorage() {
+        return storage;
+    }
+
+    public void setStorage(StorageProperties storage) {
+        this.storage = storage;
+    }
     public static class HAProxyProperties {
         private String jobId;
         private String name;
@@ -379,6 +388,27 @@ public class NomadProperties {
 
         public void setTimeoutSeconds(int timeoutSeconds) {
             this.timeoutSeconds = timeoutSeconds;
+        }
+    }
+
+    public static class StorageProperties {
+        private String volumeType;
+        private String volumeSource;
+
+        public String getVolumeType() {
+            return volumeType;
+        }
+
+        public void setVolumeType(String volumeType) {
+            this.volumeType = volumeType;
+        }
+
+        public String getVolumeSource() {
+            return volumeSource;
+        }
+
+        public void setVolumeSource(String volumeSource) {
+            this.volumeSource = volumeSource;
         }
     }
 }

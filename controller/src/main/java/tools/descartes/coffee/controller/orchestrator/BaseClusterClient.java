@@ -23,7 +23,7 @@ public abstract class BaseClusterClient {
      * - creates the defined deployment
      * - sets up the replicas of the specified container image
      */
-    public abstract void init();
+    public abstract void init(boolean persistentStorageNeeded);
 
     /** clears any deployment from the cluster */
     public abstract void clear();

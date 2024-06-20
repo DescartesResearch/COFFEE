@@ -27,6 +27,7 @@ public class TestExecutor implements Runnable {
     private final HealthRestartReporter healthRestartReporter;
     private final UpdateReporter updateReporter;
     private final NetworkingReporter networkingReporter;
+    private final StorageReporter storageReporter;
     private final CsvExporter csvExporter;
     private final SummaryExporter summaryExporter;
     private final ClusterClientWrapper clusterClientWrapper;
@@ -38,7 +39,7 @@ public class TestExecutor implements Runnable {
     public TestExecutor(ControllerProperties controllerProperties,
                         LoadGenerator loadGenerator, CommandReporter commandReporter,
                         CrashRestartReporter crashRestartReporter, HealthRestartReporter healthRestartReporter,
-                        UpdateReporter updateReporter, NetworkingReporter networkingReporter,
+                        UpdateReporter updateReporter, NetworkingReporter networkingReporter, StorageReporter storageReporter,
                         CsvExporter csvExporter, SummaryExporter summaryExporter, ClusterClientWrapper clusterClientWrapper,
                         ScriptBuilder scriptBuilder) {
         this.controllerProperties = controllerProperties;
@@ -48,6 +49,7 @@ public class TestExecutor implements Runnable {
         this.healthRestartReporter = healthRestartReporter;
         this.updateReporter = updateReporter;
         this.networkingReporter = networkingReporter;
+        this.storageReporter = storageReporter;
         this.csvExporter = csvExporter;
         this.summaryExporter = summaryExporter;
         this.clusterClientWrapper = clusterClientWrapper;
@@ -82,11 +84,18 @@ public class TestExecutor implements Runnable {
             logger.log(Level.SEVERE, "ScriptParsingException during load of procedure", ioe);
             throw new IllegalStateException("ScriptParsingException during load of procedure", ioe);
         }
+
+        boolean loadGenNeeded = Arrays.stream(procedures).anyMatch(BaseProcedure::needsLoadGenerator);
+        boolean storageNeeded = Arrays.stream(procedures).anyMatch(BaseProcedure::needsPersistentStorage);
+
+        logger.info("Load Generator Needed: " + loadGenNeeded);
+        logger.info("Storage Needed: " + storageNeeded);
+
         orchestratorClient.connect();
 
         // TODO: remove clear
         orchestratorClient.clear();
-        orchestratorClient.init();
+        orchestratorClient.init(storageNeeded);
 
         /*
          * since the load balancer uses information from the client initialization the
@@ -95,7 +104,7 @@ public class TestExecutor implements Runnable {
          * According to experience, settings may not yet be fully adopted, so an
          * additional delay is set here
          */
-        if (Arrays.stream(procedures).anyMatch(BaseProcedure::needsLoadGenerator)) {
+        if (loadGenNeeded) {
             delay(20);
             loadGenerator.setup();
         }
@@ -142,6 +151,7 @@ public class TestExecutor implements Runnable {
         healthRestartReporter.report();
         updateReporter.report();
         networkingReporter.report();
+        storageReporter.report();
 
         if (controllerProperties.isExportResults()) {
             summaryExporter.cleanUpSummaryExport();
