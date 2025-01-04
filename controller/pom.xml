@@ -44,17 +44,11 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${org.springframework.web.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>tools.descartes.coffee</groupId>
             <artifactId>shared</artifactId>
             <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml -->
         <dependency>
