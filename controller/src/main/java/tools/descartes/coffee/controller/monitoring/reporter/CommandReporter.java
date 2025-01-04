@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import tools.descartes.coffee.controller.config.ControllerProperties;
 import org.springframework.stereotype.Component;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.command.CommandExecutionService;
 import tools.descartes.coffee.controller.monitoring.database.models.CommandExecutionTime;
 import tools.descartes.coffee.controller.procedure.collection.Command;
@@ -15,7 +16,7 @@ import tools.descartes.coffee.controller.procedure.collection.Command;
 public class CommandReporter {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private final CommandExecutionService commandExecutionService;
+    private final GenericDatabaseService<CommandExecutionTime> commandExecutionService;
     private final ControllerProperties controllerProperties;
     private final CsvExporter csvExporter;
     private final SummaryExporter summaryExporter;

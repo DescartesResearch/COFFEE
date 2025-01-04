@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import tools.descartes.coffee.controller.config.ControllerProperties;
 import org.springframework.stereotype.Component;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.models.StorageTime;
 import tools.descartes.coffee.controller.monitoring.database.storage.StorageService;
 
@@ -13,7 +14,7 @@ import tools.descartes.coffee.controller.monitoring.database.storage.StorageServ
 public class StorageReporter {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private final StorageService storageService;
+    private final GenericDatabaseService<StorageTime> storageService;
     private final ControllerProperties controllerProperties;
     private final CsvExporter csvExporter;
     private final SummaryExporter summaryExporter;

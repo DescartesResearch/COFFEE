@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.models.AppCrashRestartTime;
 
 @Service
-public class AppService {
+public class AppService implements GenericDatabaseService<AppCrashRestartTime> {
 
     private final AppRepo appRepo;
 
@@ -16,6 +17,7 @@ public class AppService {
         this.appRepo = appRepo;
     }
 
+    @Override
     public List<AppCrashRestartTime> findAll() {
         var it = appRepo.findAll();
 
@@ -25,16 +27,14 @@ public class AppService {
         return times;
     }
 
+    @Override
     public void add(AppCrashRestartTime time) {
         appRepo.save(time);
     }
 
+    @Override
     public Long count() {
         return appRepo.count();
-    }
-
-    public void deleteById(Long userId) {
-        appRepo.deleteById(userId);
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.restart.app.AppService;
 import tools.descartes.coffee.controller.monitoring.database.models.AppCrashRestartTime;
 
@@ -17,9 +18,13 @@ import tools.descartes.coffee.controller.monitoring.database.models.AppCrashRest
 public class AppController {
     private static final Logger logger = Logger.getLogger(AppController.class.getName());
 
-    private final AppService appService;
+    private GenericDatabaseService<AppCrashRestartTime> appService;
 
     public AppController(AppService appService) {
+        this.appService = appService;
+    }
+
+    public void setAppService(GenericDatabaseService<AppCrashRestartTime> appService) {
         this.appService = appService;
     }
 

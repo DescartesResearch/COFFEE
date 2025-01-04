@@ -26,12 +26,18 @@ public class ScriptBuilder {
     private static final Logger logger = Logger.getLogger(ScriptBuilder.class.getName());
 
     private final ApplicationContext applicationContext;
-    private final Map<Command, Class<? extends BaseProcedure>> commandMap;
+    private Map<Command, Class<? extends BaseProcedure>> commandMap;
 
     public ScriptBuilder(ApplicationContext applicationContext, OrchestratorMap orchestratorMap,
                          ClusterProperties clusterProperties) {
         this.applicationContext = applicationContext;
-        commandMap = orchestratorMap.getMap().get(EnumUtils.searchEnum(Orchestrators.class, clusterProperties.getOrchestrator()));
+        if (orchestratorMap != null && clusterProperties != null) {
+            commandMap = orchestratorMap.getMap().get(EnumUtils.searchEnum(Orchestrators.class, clusterProperties.getOrchestrator()));
+        }
+    }
+
+    public void setCommandMap(Map<Command, Class<? extends BaseProcedure>> commandMap) {
+        this.commandMap = commandMap;
     }
 
     public BaseProcedure[] loadScript(String scriptPath) throws ScriptParsingException {
@@ -42,6 +48,10 @@ public class ScriptBuilder {
             logger.log(Level.SEVERE, "Error while reading script", ioe);
             throw new IllegalStateException("Error while reading script", ioe);
         }
+        return parseScript(sc);
+    }
+
+    public BaseProcedure[] parseScript(Scanner sc) throws ScriptParsingException {
         List<BaseProcedure> procedures = new ArrayList<>();
         while (sc.hasNextLine()) {
             // remove leading and trailing whitespaces, normalize middle spaces

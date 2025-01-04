@@ -40,8 +40,15 @@ public class AppController {
 
     private final LoadCounter loadCounter;
 
+    private ITelemetrySender telemetrySender;
+
     public AppController(LoadCounter loadCounter) {
         this.loadCounter = loadCounter;
+        this.telemetrySender = new DefaultTelemetrySender();
+    }
+
+    public void setTelemetrySender(ITelemetrySender telemetrySender) {
+        this.telemetrySender = telemetrySender;
     }
 
     @GetMapping("/")
@@ -56,7 +63,7 @@ public class AppController {
             return ResponseEntity.ok(true);
         } else {
             if (!healthStatusSent) {
-                AppUtils.sendCurrentTimestamp(appControllerAddress, appControllerPort, "health", "check");
+                telemetrySender.sendCurrentTimestamp(appControllerAddress, appControllerPort, "health", "check");
                 healthStatusSent = true;
             }
 
@@ -67,7 +74,7 @@ public class AppController {
 
     @PostMapping("/unhealthy")
     public String setUnhealthy() {
-        AppUtils.sendCurrentTimestamp(appControllerAddress, appControllerPort, "health", "unhealthy");
+        telemetrySender.sendCurrentTimestamp(appControllerAddress, appControllerPort, "health", "unhealthy");
         this.isHealthy = false;
 
         return "Set healthy flag to false.";
@@ -75,7 +82,7 @@ public class AppController {
 
     @GetMapping("/unhealthy")
     public String setUnhealthyViaGet() {
-        AppUtils.sendCurrentTimestamp(appControllerAddress, appControllerPort, "health", "unhealthy");
+        telemetrySender.sendCurrentTimestamp(appControllerAddress, appControllerPort, "health", "unhealthy");
         this.isHealthy = false;
 
         return "Set healthy flag to false.";
@@ -83,7 +90,7 @@ public class AppController {
 
     @GetMapping("/crash")
     public String crashContainer() {
-        AppUtils.sendCurrentTimestamp(appControllerAddress, appControllerPort, "app", "crash");
+        telemetrySender.sendCurrentTimestamp(appControllerAddress, appControllerPort, "app", "crash");
         System.exit(1);
 
         // not reachable

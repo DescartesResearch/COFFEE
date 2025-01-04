@@ -39,9 +39,11 @@ public class AppApplication {
     @Autowired
     private LoadCounter loadCounter;
 
+    private final ITelemetrySender telemetrySender = new DefaultTelemetrySender();
+
     @EventListener
     public void onApplicationReady(ApplicationReadyEvent event) {
-        AppUtils.sendContainerTimestamp(appControllerAddress, appControllerPort, "start", AppApplication.startTime);
+        telemetrySender.sendContainerTimestamp(appControllerAddress, appControllerPort, "start", AppApplication.startTime);
     }
 
     @PreDestroy
@@ -52,7 +54,7 @@ public class AppApplication {
         loadDTO.setTotalRuntime(totalRuntime);
         loadDTO.setReceivedRequests(loadCounter.getReceivedRequests());
         loadDTO.setRequestNumbers(loadCounter.getRequestNumbers());
-        AppUtils.sendReceivedRequests(appControllerAddress, appControllerPort, loadDTO);
-        AppUtils.sendContainerTimestamp(appControllerAddress, appControllerPort, "stop", endTime);
+        telemetrySender.sendReceivedRequests(appControllerAddress, appControllerPort, loadDTO);
+        telemetrySender.sendContainerTimestamp(appControllerAddress, appControllerPort, "stop", endTime);
     }
 }

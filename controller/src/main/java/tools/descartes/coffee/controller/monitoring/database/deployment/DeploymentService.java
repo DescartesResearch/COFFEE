@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.models.UpdateRestartTime;
 
 @Service
-public class DeploymentService {
+public class DeploymentService implements GenericDatabaseService<UpdateRestartTime> {
 
     private final DeploymentRepo deploymentRepo;
 
@@ -16,6 +17,7 @@ public class DeploymentService {
         this.deploymentRepo = deploymentRepo;
     }
 
+    @Override
     public List<UpdateRestartTime> findAll() {
         var it = deploymentRepo.findAll();
 
@@ -25,16 +27,14 @@ public class DeploymentService {
         return times;
     }
 
+    @Override
     public void add(UpdateRestartTime time) {
         deploymentRepo.save(time);
     }
 
+    @Override
     public Long count() {
         return deploymentRepo.count();
-    }
-
-    public void deleteById(Long userId) {
-        deploymentRepo.deleteById(userId);
     }
 
 }

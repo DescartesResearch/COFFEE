@@ -11,6 +11,7 @@ import tools.descartes.coffee.controller.config.ControllerProperties;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.models.NetworkTime;
 import tools.descartes.coffee.controller.monitoring.database.networking.NetworkingService;
 
@@ -18,7 +19,7 @@ import tools.descartes.coffee.controller.monitoring.database.networking.Networki
 public class NetworkingReporter {
         private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-        private final NetworkingService networkingService;
+        private final GenericDatabaseService<NetworkTime> networkingService;
         private final ControllerProperties controllerProperties;
         private final CsvExporter csvExporter;
         private final SummaryExporter summaryExporter;

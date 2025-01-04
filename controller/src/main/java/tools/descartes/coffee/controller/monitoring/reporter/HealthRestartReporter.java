@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import tools.descartes.coffee.controller.config.ControllerProperties;
 import org.springframework.stereotype.Component;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.restart.health.HealthService;
 import tools.descartes.coffee.controller.monitoring.database.models.HealthRestartTime;
 
@@ -13,7 +14,7 @@ import tools.descartes.coffee.controller.monitoring.database.models.HealthRestar
 public class HealthRestartReporter {
         private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-        private final HealthService healthService;
+        private final GenericDatabaseService<HealthRestartTime> healthService;
         private final ControllerProperties controllerProperties;
         private final CsvExporter csvExporter;
         private final SummaryExporter summaryExporter;

@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.logging.Logger;
 import java.io.*;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.loaddist.LoadDistributionService;
 import tools.descartes.coffee.controller.monitoring.database.models.LoadDistribution;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,14 +31,14 @@ import tools.descartes.coffee.shared.LoadDistributionDTO;
 public class ContainerController {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private final CommandExecutionService commandExecutionService;
+    private final GenericDatabaseService<CommandExecutionTime> commandExecutionService;
     private final HealthController healthController;
     private final AppController appController;
     private final ManualRestartController manualRestartController;
     private final CommandController commandController;
-    private final DeploymentService deploymentService;
+    private final GenericDatabaseService<UpdateRestartTime> deploymentService;
     private final ProcedureQueue procedureQueue;
-    private final LoadDistributionService loadDistributionService;
+    private final GenericDatabaseService<LoadDistribution> loadDistributionService;
     private int temporaryLoadCounter;
 
     public ContainerController(CommandExecutionService commandExecutionService, HealthController healthController,
