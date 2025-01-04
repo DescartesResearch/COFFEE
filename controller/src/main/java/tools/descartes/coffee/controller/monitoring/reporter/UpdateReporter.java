@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import tools.descartes.coffee.controller.config.ControllerProperties;
 import org.springframework.stereotype.Component;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.deployment.DeploymentService;
 import tools.descartes.coffee.controller.monitoring.database.models.UpdateRestartTime;
 
@@ -13,7 +14,7 @@ import tools.descartes.coffee.controller.monitoring.database.models.UpdateRestar
 public class UpdateReporter {
         private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-        private final DeploymentService deploymentService;
+        private final GenericDatabaseService<UpdateRestartTime> deploymentService;
         private final ControllerProperties controllerProperties;
         private final CsvExporter csvExporter;
         private final SummaryExporter summaryExporter;

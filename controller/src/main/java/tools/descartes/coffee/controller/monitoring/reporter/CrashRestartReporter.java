@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import tools.descartes.coffee.controller.config.ControllerProperties;
 import org.springframework.stereotype.Component;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.restart.app.AppService;
 import tools.descartes.coffee.controller.monitoring.database.models.AppCrashRestartTime;
 
@@ -13,7 +14,7 @@ import tools.descartes.coffee.controller.monitoring.database.models.AppCrashRest
 public class CrashRestartReporter {
         private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-        private final AppService crashService;
+        private final GenericDatabaseService<AppCrashRestartTime> crashService;
         private final ControllerProperties controllerProperties;
         private final CsvExporter csvExporter;
         private final SummaryExporter summaryExporter;

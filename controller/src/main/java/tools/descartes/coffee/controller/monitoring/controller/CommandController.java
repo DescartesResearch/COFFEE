@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.utils.EnumUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,13 @@ import tools.descartes.coffee.controller.procedure.collection.Command;
 public class CommandController {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private final CommandExecutionService commandExecutionService;
+    private GenericDatabaseService<CommandExecutionTime> commandExecutionService;
 
     public CommandController(CommandExecutionService commandExecutionService) {
+        this.commandExecutionService = commandExecutionService;
+    }
+
+    public void setCommandExecutionService(GenericDatabaseService<CommandExecutionTime> commandExecutionService) {
         this.commandExecutionService = commandExecutionService;
     }
 

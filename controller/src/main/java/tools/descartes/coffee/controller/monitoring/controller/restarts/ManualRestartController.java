@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.stereotype.Component;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.models.ManualRestartTime;
 import tools.descartes.coffee.controller.monitoring.database.restart.manual.ManualRestartService;
 
@@ -15,9 +16,13 @@ import tools.descartes.coffee.controller.monitoring.database.restart.manual.Manu
 @Component
 public class ManualRestartController {
 
-    private final ManualRestartService manualRestartService;
+    private GenericDatabaseService<ManualRestartTime> manualRestartService;
 
     public ManualRestartController(ManualRestartService manualRestartService) {
+        this.manualRestartService = manualRestartService;
+    }
+
+    public void setManualRestartService(GenericDatabaseService<ManualRestartTime> manualRestartService) {
         this.manualRestartService = manualRestartService;
     }
 

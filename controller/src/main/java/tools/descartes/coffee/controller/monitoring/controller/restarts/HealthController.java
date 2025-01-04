@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.restart.health.HealthService;
 import tools.descartes.coffee.controller.monitoring.database.models.HealthRestartTime;
 
@@ -17,9 +18,13 @@ import tools.descartes.coffee.controller.monitoring.database.models.HealthRestar
 public class HealthController {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private final HealthService healthService;
+    private GenericDatabaseService<HealthRestartTime> healthService;
 
     public HealthController(HealthService healthService) {
+        this.healthService = healthService;
+    }
+
+    public void setHealthService(GenericDatabaseService<HealthRestartTime> healthService) {
         this.healthService = healthService;
     }
 

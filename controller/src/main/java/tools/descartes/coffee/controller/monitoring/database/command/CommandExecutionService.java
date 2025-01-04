@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import tools.descartes.coffee.controller.monitoring.database.GenericDatabaseService;
 import tools.descartes.coffee.controller.monitoring.database.models.CommandExecutionTime;
 
 @Service
-public class CommandExecutionService {
+public class CommandExecutionService implements GenericDatabaseService<CommandExecutionTime> {
 
     private final CommandExecutionRepo commandExecutionRepo;
 
@@ -16,6 +17,7 @@ public class CommandExecutionService {
         this.commandExecutionRepo = commandExecutionRepo;
     }
 
+    @Override
     public List<CommandExecutionTime> findAll() {
         var it = commandExecutionRepo.findAll();
 
@@ -25,16 +27,14 @@ public class CommandExecutionService {
         return times;
     }
 
+    @Override
     public void add(CommandExecutionTime time) {
         commandExecutionRepo.save(time);
     }
 
+    @Override
     public Long count() {
         return commandExecutionRepo.count();
-    }
-
-    public void deleteById(Long userId) {
-        commandExecutionRepo.deleteById(userId);
     }
 
 }
